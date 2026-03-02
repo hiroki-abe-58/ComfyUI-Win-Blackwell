@@ -1,0 +1,55 @@
+# =============================================================================
+# ComfyUI Core Dependencies for Blackwell (sm_120) Environment
+# =============================================================================
+#
+# IMPORTANT: Do NOT add torch / torchvision / torchaudio / xformers here.
+# PyTorch is installed separately as nightly cu130 by setup.ps1.
+# xformers is deliberately excluded (incompatible with Blackwell nightly).
+#
+# Install: pip install -r requirements-core.txt
+# =============================================================================
+
+# -- ComfyUI frontend & templates --
+comfyui-frontend-package>=1.38.0
+comfyui-workflow-templates>=0.8.27
+comfyui-embedded-docs>=0.4.1
+
+# -- ML core --
+torchsde
+einops
+transformers>=4.50.3
+tokenizers>=0.13.3
+sentencepiece
+safetensors>=0.4.2
+
+# -- Web / networking --
+aiohttp>=3.11.8
+yarl>=1.18.0
+requests
+
+# -- Data / config --
+pyyaml
+numpy>=1.25.0
+scipy
+Pillow
+
+# -- Database --
+alembic
+SQLAlchemy
+
+# -- Utilities --
+tqdm
+psutil
+av>=14.2.0
+
+# -- ComfyUI extensions --
+comfy-kitchen>=0.2.7
+comfy-aimdo>=0.1.8
+
+# -- Image processing --
+kornia>=0.7.1
+spandrel
+
+# -- Validation --
+pydantic~=2.0
+pydantic-settings~=2.0

@@ -1,0 +1,28 @@
+# =============================================================================
+# ComfyUI Extra Model Paths Configuration (Example)
+# =============================================================================
+#
+# Copy this file to your ComfyUI directory as "extra_model_paths.yaml"
+# and edit the paths to point to your model directories.
+#
+# This allows you to share models across multiple ComfyUI installations
+# or store them on a different drive.
+#
+# Usage:
+#   1. Copy to: ComfyUI_windows_portable\ComfyUI\extra_model_paths.yaml
+#   2. Edit paths below to match your setup
+#   3. Restart ComfyUI
+# =============================================================================
+
+# Example: shared model storage on a separate drive
+shared_models:
+    checkpoints: D:\AI-Models\checkpoints
+    vae: D:\AI-Models\vae
+    loras: D:\AI-Models\loras
+    clip: D:\AI-Models\clip
+    clip_vision: D:\AI-Models\clip_vision
+    text_encoders: D:\AI-Models\text_encoders
+    diffusion_models: D:\AI-Models\diffusion_models
+    controlnet: D:\AI-Models\controlnet
+    upscale_models: D:\AI-Models\upscale_models
+    embeddings: D:\AI-Models\embeddings

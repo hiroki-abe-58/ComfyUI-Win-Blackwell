@@ -1,0 +1,84 @@
+# =============================================================================
+# ComfyUI-GeForce-Blackwell .gitignore
+# =============================================================================
+
+# -- Python --
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+
+# -- Virtual environments --
+venv/
+.venv/
+python_embeded/
+
+# -- ComfyUI runtime directories --
+output/
+input/
+temp/
+user/
+web_custom_versions/
+
+# -- Workflows (user-created, not part of the environment) --
+*.json
+!custom-nodes.json
+!package.json
+
+# -- Models & weights (large binary files) --
+models/
+*.safetensors
+*.ckpt
+*.pth
+*.bin
+*.pt
+*.onnx
+*.gguf
+
+# -- Checkpoints --
+checkpoints/
+
+# -- LoRA --
+loras/
+
+# -- IDE / Editor --
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# -- OS --
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# -- Logs --
+*.log
+
+# -- Environment files --
+.env
+.env.local
+
+# -- ComfyUI specific --
+extra_model_paths.yaml
+openapi.yaml
+filtered-openapi.yaml
+uv.lock
+
+# -- Downloaded archives --
+*.zip
+*.tar.gz
+*.7z
+
+# -- pip --
+pip-cache/
+wheels/
+
+# -- Triton cache --
+.triton_cache/

@@ -1,0 +1,181 @@
+{
+  "_comment": "Verified custom nodes for ComfyUI on Blackwell (sm_120) + Windows Native. All nodes listed here have been tested and confirmed working with PyTorch cu130 on RTX 5090.",
+  "_last_verified": "2026-03-01",
+  "_environment": {
+    "gpu": "NVIDIA GeForce RTX 5090 (32GB VRAM)",
+    "pytorch": "2.9.1+cu130",
+    "python": "3.13",
+    "os": "Windows 11"
+  },
+  "nodes": [
+    {
+      "name": "ComfyUI-Manager",
+      "url": "https://github.com/ltdrdata/ComfyUI-Manager.git",
+      "description": "Node management UI for ComfyUI",
+      "category": "management",
+      "required": true
+    },
+    {
+      "name": "ComfyUI-WanVideoWrapper",
+      "url": "https://github.com/kijai/ComfyUI-WanVideoWrapper.git",
+      "description": "Wan 2.1 video generation nodes",
+      "category": "video"
+    },
+    {
+      "name": "ComfyUI-LTXVideo",
+      "url": "https://github.com/Lightricks/ComfyUI-LTXVideo.git",
+      "description": "LTX-Video generation nodes",
+      "category": "video"
+    },
+    {
+      "name": "ComfyUI-HeartMuLa",
+      "url": "https://github.com/HeartMuLa/ComfyUI-HeartMuLa.git",
+      "description": "HeartMuLa music/audio generation",
+      "category": "audio"
+    },
+    {
+      "name": "ComfyUI-AceMusic",
+      "url": "https://github.com/smthemex/ComfyUI-AceMusic.git",
+      "description": "ACE-Step music generation nodes",
+      "category": "audio"
+    },
+    {
+      "name": "ComfyUI-MelBandRoFormer",
+      "url": "https://github.com/smthemex/ComfyUI-MelBandRoFormer.git",
+      "description": "Audio source separation (vocal/instrumental)",
+      "category": "audio"
+    },
+    {
+      "name": "ComfyUI-Step1X-Edit",
+      "url": "https://github.com/smthemex/ComfyUI-Step1X-Edit.git",
+      "description": "Step1X image editing nodes",
+      "category": "image-editing"
+    },
+    {
+      "name": "ComfyUI_SimpleTranslator",
+      "url": "https://github.com/smthemex/ComfyUI_SimpleTranslator.git",
+      "description": "Text translation nodes",
+      "category": "utility"
+    },
+    {
+      "name": "ComfyUI_FL-HeartMuLa",
+      "url": "https://github.com/smthemex/ComfyUI_FL-HeartMuLa.git",
+      "description": "HeartMuLa FL variant nodes",
+      "category": "audio"
+    },
+    {
+      "name": "ComfyUI_kkTranslator_nodes",
+      "url": "https://github.com/smthemex/ComfyUI_kkTranslator_nodes.git",
+      "description": "Translation utility nodes",
+      "category": "utility"
+    },
+    {
+      "name": "ComfyUI_Comfyroll_CustomNodes",
+      "url": "https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes.git",
+      "description": "Comprehensive utility node collection",
+      "category": "utility"
+    },
+    {
+      "name": "ComfyUI-Crystools",
+      "url": "https://github.com/crystian/ComfyUI-Crystools.git",
+      "description": "System monitoring and utility tools",
+      "category": "utility"
+    },
+    {
+      "name": "comfyui_longcat_image",
+      "url": "https://github.com/smthemex/comfyui_longcat_image.git",
+      "description": "LongCat image/video processing",
+      "category": "video"
+    },
+    {
+      "name": "comfyui-kjnodes",
+      "url": "https://github.com/kijai/ComfyUI-KJNodes.git",
+      "description": "Image resize, float/int constants, and utility nodes",
+      "category": "utility"
+    },
+    {
+      "name": "comfyui-quadmoons-nodes",
+      "url": "https://github.com/trung0209/ComfyUI-quadmoons-nodes.git",
+      "description": "Quadmoons utility nodes",
+      "category": "utility"
+    },
+    {
+      "name": "comfyui-depthanythingv2",
+      "url": "https://github.com/kijai/ComfyUI-DepthAnythingV2.git",
+      "description": "Depth estimation (DepthAnything V2)",
+      "category": "depth"
+    },
+    {
+      "name": "comfyui_essentials",
+      "url": "https://github.com/cubiq/ComfyUI_essentials.git",
+      "description": "Essential utility nodes",
+      "category": "utility"
+    },
+    {
+      "name": "comfyui-videohelpersuite",
+      "url": "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git",
+      "description": "Video combine, load, and helper nodes",
+      "category": "video"
+    },
+    {
+      "name": "comfyui-easy-use",
+      "url": "https://github.com/yolain/ComfyUI-Easy-Use.git",
+      "description": "Simplified workflow nodes",
+      "category": "utility"
+    },
+    {
+      "name": "comfyui-custom-scripts",
+      "url": "https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git",
+      "description": "UI enhancements and custom scripts",
+      "category": "ui"
+    },
+    {
+      "name": "comfyui-impact-pack",
+      "url": "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git",
+      "description": "Detection, segmentation, and inpainting nodes",
+      "category": "image-processing"
+    },
+    {
+      "name": "comfyui_layerstyle",
+      "url": "https://github.com/chflame163/ComfyUI_LayerStyle.git",
+      "description": "Layer style and compositing nodes",
+      "category": "image-processing"
+    },
+    {
+      "name": "comfyui_controlnet_aux",
+      "url": "https://github.com/Fannovel16/comfyui_controlnet_aux.git",
+      "description": "ControlNet auxiliary preprocessors",
+      "category": "controlnet"
+    },
+    {
+      "name": "was-node-suite-comfyui",
+      "url": "https://github.com/WASasquatch/was-node-suite-comfyui.git",
+      "description": "WAS Node Suite -- large utility collection",
+      "category": "utility"
+    },
+    {
+      "name": "efficiency-nodes-comfyui",
+      "url": "https://github.com/jags111/efficiency-nodes-comfyui.git",
+      "description": "Efficient KSampler and batch processing",
+      "category": "sampling"
+    },
+    {
+      "name": "masquerade-nodes-comfyui",
+      "url": "https://github.com/BadCafeCode/masquerade-nodes-comfyui.git",
+      "description": "Mask manipulation and compositing",
+      "category": "mask"
+    },
+    {
+      "name": "rgthree-comfy",
+      "url": "https://github.com/rgthree/rgthree-comfy.git",
+      "description": "Power tools: reroute, bookmark, seed control",
+      "category": "utility"
+    },
+    {
+      "name": "ComfyUI-SKBundle",
+      "url": "https://github.com/shinich39/ComfyUI-SKBundle.git",
+      "description": "SK bundle utility nodes",
+      "category": "utility"
+    }
+  ]
+}
