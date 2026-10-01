@@ -1,6 +1,6 @@
 # ComfyUI for GeForce RTX 50 シリーズ (Blackwell)
 
-**NVIDIA GeForce RTX 5090/5080/5070 (Blackwell アーキテクチャ, sm_120) + CUDA 13.0 で動作する、世界初の完全ドキュメント化されたWindowsネイティブ ComfyUI セットアップ。**
+**NVIDIA GeForce RTX 5090/5080/5070 (Blackwell アーキテクチャ, sm_120) + CUDA 13.0 で動作する、手順を完全に文書化したWindowsネイティブ ComfyUI セットアップ。**
 
 > **他の言語:** [English](README.md) | [中文](README_zh.md) | [한국어](README_ko.md)
 
@@ -8,26 +8,26 @@
 
 ## このリポジトリの特徴
 
-RTX 50シリーズ GPU (Blackwell, Compute Capability sm_120) は、2026年初頭時点で **PyTorch安定版に対応していません**。これらのGPUでComfyUIを動作させるには、特定のバージョンと回避策が必要ですが、それらを単一の再現可能なパッケージとしてまとめたものは他にありません。
+RTX 50シリーズ GPU (Blackwell, Compute Capability sm_120) では、sm_120 向けカーネルを含む PyTorch ビルドが必要です。また Windows では、xformers がインストール済みの torch を置き換え、公式 Triton は Linux 専用のため使えません。このリポジトリは、RTX 5090 で検証した1つの組み合わせ（PyTorch nightly cu130 + triton-windows、xformers なし）を再現可能なセットアップとしてまとめたものです。
 
 ### 技術的ハイライト
 
 | 項目 | 詳細 |
 |------|------|
 | **GPUアーキテクチャ** | NVIDIA Blackwell (sm_120) -- RTX 5090 / 5080 / 5070 |
-| **CUDAバージョン** | 13.0 (cu130) -- 最新のCUDAランタイム |
+| **CUDAバージョン** | 13.0 (cu130) |
 | **PyTorch** | Nightly cu130ビルド (stable版ではなく、cu128でもない) |
-| **Python** | 3.13 (最新) |
+| **Python** | 3.13 |
 | **Triton** | triton-windows フォーク (公式Tritonはlinux専用) |
 | **xformers** | 意図的に除外 (PyTorchのダウングレードを引き起こすため) |
 | **カスタムノード** | 動画・音楽生成を含む28個の検証済みノード |
 | **プラットフォーム** | Windowsネイティブ (WSL2/Docker不要) |
 
-### ユニークポイント
+### ポイント
 
-1. **Blackwell + Windowsネイティブ + CUDA 13.0** -- WSL2やDockerを使わずにBlackwell GPUでComfyUIを完全動作させる、世界でも最も早期に文書化されたセットアップの一つです。
+1. **Blackwell + Windowsネイティブ + CUDA 13.0** -- WSL2やDockerを使わずに、Blackwell GPUでComfyUIをWindows上で完全に動作させます。
 
-2. **xformers不要アーキテクチャ** -- Blackwell nightly ビルドと非互換なxformersの代わりに、`triton-windows` + `torch.compile` を使用する新しいパラダイムを開拓しています。
+2. **xformers不要アーキテクチャ** -- Blackwell nightly ビルドと非互換なxformersの代わりに、`triton-windows` + `torch.compile` を使用します。
 
 3. **28個のカスタムノード検証済み** -- 最先端の動画生成 (Wan 2.1, LTX-Video, HunyuanVideo 1.5, Kandinsky 5.0, LongCat-Video) と音楽生成 (ACE-Step, HeartMuLa) を含む全ノードがRTX 5090 (32GB VRAM) で個別にテスト済みです。
 
@@ -77,8 +77,8 @@ RTX 50シリーズ GPU (Blackwell, Compute Capability sm_120) は、2026年初�
 
 ```powershell
 # リポジトリをクローン
-git clone https://github.com/hiroki-abe-58/ComfyUI-GeForce-Blackwell.git
-cd ComfyUI-GeForce-Blackwell
+git clone https://github.com/hiroki-abe-58/ComfyUI-Win-Blackwell.git
+cd ComfyUI-Win-Blackwell
 
 # セットアップスクリプトを実行
 powershell -ExecutionPolicy Bypass -File setup.ps1
@@ -102,10 +102,10 @@ python verify_env.py
 
 | # | 鉄則 | 理由 | 違反時の症状 |
 |---|------|------|------------|
-| 1 | **PyTorch nightly cu130を使う** | stable版はsm_120カーネル未搭載 | `RuntimeError: sm_120 is not compatible` |
-| 2 | **xformersを絶対にインストールしない** | PyTorchをstable版に強制ダウングレードする | すべてが動かなくなる |
-| 3 | **requirements.txtからtorchを除外する** | pipがnightlyをstableで上書きする | サイレントなバージョンダウングレード |
-| 4 | **カスタムノード追加後は必ず確認** | ノードの依存関係がstable torchを要求する場合がある | 動いていたものが動かなくなる |
+| 1 | **PyTorch nightly cu130を使う** | このセットアップの検証済みビルド。sm_120カーネルを含まないビルドはRTX 50で動かない | `RuntimeError: sm_120 is not compatible` |
+| 2 | **xformersを絶対にインストールしない** | torchのバージョンを固定しているため、pipがcu130ビルドを置き換える | すべてが動かなくなる |
+| 3 | **requirements.txtからtorchを除外する** | pipがnightly cu130ビルドを別のtorchで上書きする | サイレントなバージョンダウングレード |
+| 4 | **カスタムノード追加後は必ず確認** | ノードの依存関係が別のtorchビルドを持ち込む場合がある | 動いていたものが動かなくなる |
 | 5 | **プロキシ環境変数をクリアする** | システムプロキシがpip/git接続をブロックする | インストール失敗 |
 
 ---
@@ -194,7 +194,7 @@ powershell -ExecutionPolicy Bypass -File update.ps1
 A: いいえ。このセットアップはWindowsネイティブで完全に動作します。
 
 **Q: xformersは使えますか?**
-A: いいえ。xformersはPyTorch stable版への強制ダウングレードを引き起こし、sm_120非対応になります。代わりにtriton-windows + torch.compileを使用してください。
+A: いいえ。xformersのwheelはtorchのバージョンを固定しているため、インストールするとcu130ビルドが置き換わります。代わりにtriton-windows + torch.compileを使用してください。
 
 **Q: RTX 4090 (Ada Lovelace) でも動きますか?**
 A: はい。cu130は後方互換性があります。ただしRTX 4090ユーザーはstable版PyTorchも使用可能です。

@@ -1,6 +1,6 @@
 # ComfyUI for GeForce RTX 50-Series (Blackwell)
 
-**The first fully documented, Windows-native ComfyUI setup for NVIDIA GeForce RTX 5090/5080/5070 (Blackwell architecture, sm_120) with CUDA 13.0.**
+**A fully documented, Windows-native ComfyUI setup for NVIDIA GeForce RTX 5090/5080/5070 (Blackwell architecture, sm_120) with CUDA 13.0.**
 
 > **Other languages:** [日本語](README_ja.md) | [中文](README_zh.md) | [한국어](README_ko.md)
 
@@ -8,26 +8,26 @@
 
 ## What Makes This Special
 
-RTX 50-series GPUs (Blackwell, Compute Capability sm_120) are **not supported by PyTorch stable releases** as of early 2026. Running ComfyUI on these GPUs requires specific versions and workarounds that are not documented anywhere else in a single, reproducible package.
+RTX 50-series GPUs (Blackwell, Compute Capability sm_120) need a PyTorch build that includes sm_120 kernels, and on Windows some common ComfyUI dependencies get in the way: xformers replaces the installed torch, and official Triton is Linux-only. This repository packages one combination verified on an RTX 5090 (PyTorch nightly cu130, triton-windows, no xformers) into a reproducible setup.
 
 ### Technical Highlights
 
 | Feature | Details |
 |---------|---------|
 | **GPU Architecture** | NVIDIA Blackwell (sm_120) -- RTX 5090 / 5080 / 5070 |
-| **CUDA Version** | 13.0 (cu130) -- the latest CUDA runtime |
+| **CUDA Version** | 13.0 (cu130) |
 | **PyTorch** | Nightly cu130 build (not stable, not cu128) |
-| **Python** | 3.13 (latest) |
+| **Python** | 3.13 |
 | **Triton** | triton-windows fork (official Triton is Linux-only) |
 | **xformers** | Deliberately excluded (causes PyTorch downgrade) |
 | **Custom Nodes** | 28 verified nodes including video & music generation |
 | **Platform** | Windows Native (no WSL2, no Docker required) |
 
-### Why This Is Unique
+### Key Points
 
-1. **Blackwell + Windows Native + CUDA 13.0** -- One of the world's first documented setups that runs ComfyUI on Blackwell GPUs entirely on Windows without WSL2 or Docker.
+1. **Blackwell + Windows Native + CUDA 13.0** -- Runs ComfyUI on Blackwell GPUs entirely on Windows, without WSL2 or Docker.
 
-2. **No xformers Architecture** -- Pioneers the use of `triton-windows` + `torch.compile` as a replacement for xformers, which is incompatible with Blackwell nightly builds.
+2. **No xformers Architecture** -- Uses `triton-windows` + `torch.compile` in place of xformers, which is incompatible with Blackwell nightly builds.
 
 3. **28 Custom Nodes Verified** -- All nodes have been individually tested on RTX 5090 (32GB VRAM), including cutting-edge video generation (Wan 2.1, LTX-Video, HunyuanVideo 1.5, Kandinsky 5.0, LongCat-Video) and music generation (ACE-Step, HeartMuLa).
 
@@ -77,8 +77,8 @@ RTX 50-series GPUs (Blackwell, Compute Capability sm_120) are **not supported by
 
 ```powershell
 # Clone this repository
-git clone https://github.com/hiroki-abe-58/ComfyUI-GeForce-Blackwell.git
-cd ComfyUI-GeForce-Blackwell
+git clone https://github.com/hiroki-abe-58/ComfyUI-Win-Blackwell.git
+cd ComfyUI-Win-Blackwell
 
 # Run the setup script
 powershell -ExecutionPolicy Bypass -File setup.ps1
@@ -115,7 +115,7 @@ Expected output:
 ## Repository Structure
 
 ```
-ComfyUI-GeForce-Blackwell/
+ComfyUI-Win-Blackwell/
 ├── setup.bat                 # One-click setup (double-click)
 ├── setup.ps1                 # Full setup script (PowerShell)
 ├── run.bat                   # Start ComfyUI
@@ -139,10 +139,10 @@ These rules **must** be followed. Violating any of them will break your environm
 
 | # | Rule | Why | What Happens If Violated |
 |---|------|-----|--------------------------|
-| 1 | **Use PyTorch nightly cu130** | Stable builds don't include sm_120 kernels | `RuntimeError: sm_120 is not compatible` |
-| 2 | **Never install xformers** | It force-downgrades PyTorch to stable | Everything stops working |
-| 3 | **Exclude torch from requirements.txt** | pip will overwrite nightly with stable | Silent version downgrade |
-| 4 | **Verify after adding custom nodes** | Node dependencies may pull in stable torch | Previously working setup breaks |
+| 1 | **Use PyTorch nightly cu130** | It is the build this setup is verified with. Builds without sm_120 kernels fail on RTX 50 | `RuntimeError: sm_120 is not compatible` |
+| 2 | **Never install xformers** | Its wheels pin a specific torch version, so pip replaces the cu130 build | Everything stops working |
+| 3 | **Exclude torch from requirements.txt** | pip will overwrite the nightly cu130 build with a different torch | Silent version downgrade |
+| 4 | **Verify after adding custom nodes** | Node dependencies may pull in a different torch build | Previously working setup breaks |
 | 5 | **Clear proxy environment variables** | System proxies block pip/git connections | Installation failures |
 
 ---
@@ -252,7 +252,7 @@ This will update ComfyUI core, PyTorch, and all custom nodes while preserving Bl
 A: No. This setup runs entirely on Windows native. WSL2/Docker are alternatives but not required.
 
 **Q: Can I use xformers?**
-A: No. xformers forces a downgrade to PyTorch stable, which doesn't support sm_120. Use triton-windows + torch.compile instead.
+A: No. xformers wheels pin a specific torch version, so installing one replaces the cu130 build. Use triton-windows + torch.compile instead.
 
 **Q: Will this work on RTX 4090 (Ada Lovelace)?**
 A: Yes. cu130 is backward-compatible. However, RTX 4090 users can also use stable PyTorch builds.
@@ -260,8 +260,8 @@ A: Yes. cu130 is backward-compatible. However, RTX 4090 users can also use stabl
 **Q: Where do I put models?**
 A: After setup, place models in `ComfyUI_windows_portable/ComfyUI/models/`. See `configs/extra_model_paths.yaml.example` for shared model storage.
 
-**Q: When will PyTorch stable support Blackwell?**
-A: Expected in a future release (possibly PyTorch 2.12+). Until then, nightly cu130 is required.
+**Q: Can I use a stable PyTorch release instead of nightly?**
+A: Stable releases built for CUDA 12.8 or later include sm_120 kernels, but this setup is verified only with nightly cu130. A stable build has not been tested here.
 
 ---
 
