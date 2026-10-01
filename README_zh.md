@@ -1,6 +1,6 @@
 # ComfyUI -- 适配 GeForce RTX 50 系列 (Blackwell)
 
-**全球首个完整文档化的 Windows 原生 ComfyUI 配置方案，支持 NVIDIA GeForce RTX 5090/5080/5070 (Blackwell 架构, sm_120) + CUDA 13.0。**
+**完整文档化的 Windows 原生 ComfyUI 配置方案，支持 NVIDIA GeForce RTX 5090/5080/5070 (Blackwell 架构, sm_120) + CUDA 13.0。**
 
 > **其他语言:** [English](README.md) | [日本語](README_ja.md) | [한국어](README_ko.md)
 
@@ -8,26 +8,26 @@
 
 ## 本仓库的特色
 
-RTX 50 系列 GPU (Blackwell, Compute Capability sm_120) 截至 2026 年初**尚未被 PyTorch 稳定版支持**。在这些 GPU 上运行 ComfyUI 需要特定的版本组合和解决方案，而本仓库是首个将所有方案整合为可复现安装包的项目。
+RTX 50 系列 GPU (Blackwell, Compute Capability sm_120) 需要包含 sm_120 内核的 PyTorch 构建。此外在 Windows 上，xformers 会替换已安装的 torch，官方 Triton 仅支持 Linux。本仓库将在 RTX 5090 上验证过的一种组合（PyTorch nightly cu130 + triton-windows，不含 xformers）整理为可复现的安装方案。
 
 ### 技术亮点
 
 | 项目 | 详情 |
 |------|------|
 | **GPU 架构** | NVIDIA Blackwell (sm_120) -- RTX 5090 / 5080 / 5070 |
-| **CUDA 版本** | 13.0 (cu130) -- 最新 CUDA 运行时 |
+| **CUDA 版本** | 13.0 (cu130) |
 | **PyTorch** | Nightly cu130 构建 (非稳定版, 非 cu128) |
-| **Python** | 3.13 (最新版) |
+| **Python** | 3.13 |
 | **Triton** | triton-windows 分支 (官方 Triton 仅支持 Linux) |
 | **xformers** | 刻意排除 (会导致 PyTorch 降级) |
 | **自定义节点** | 28 个已验证节点，包含视频和音乐生成 |
 | **平台** | Windows 原生 (无需 WSL2 或 Docker) |
 
-### 独特之处
+### 要点
 
-1. **Blackwell + Windows 原生 + CUDA 13.0** -- 全球最早的完整文档化方案之一，无需 WSL2 或 Docker 即可在 Blackwell GPU 上完整运行 ComfyUI。
+1. **Blackwell + Windows 原生 + CUDA 13.0** -- 无需 WSL2 或 Docker，即可在 Windows 上的 Blackwell GPU 上完整运行 ComfyUI。
 
-2. **无 xformers 架构** -- 开创性地使用 `triton-windows` + `torch.compile` 替代与 Blackwell nightly 构建不兼容的 xformers。
+2. **无 xformers 架构** -- 使用 `triton-windows` + `torch.compile` 替代与 Blackwell nightly 构建不兼容的 xformers。
 
 3. **28 个自定义节点已验证** -- 所有节点均在 RTX 5090 (32GB VRAM) 上逐一测试通过，包括前沿视频生成 (Wan 2.1, LTX-Video, HunyuanVideo 1.5, Kandinsky 5.0, LongCat-Video) 和音乐生成 (ACE-Step, HeartMuLa)。
 
@@ -77,8 +77,8 @@ RTX 50 系列 GPU (Blackwell, Compute Capability sm_120) 截至 2026 年初**尚
 
 ```powershell
 # 克隆本仓库
-git clone https://github.com/hiroki-abe-58/ComfyUI-GeForce-Blackwell.git
-cd ComfyUI-GeForce-Blackwell
+git clone https://github.com/hiroki-abe-58/ComfyUI-Win-Blackwell.git
+cd ComfyUI-Win-Blackwell
 
 # 运行安装脚本
 powershell -ExecutionPolicy Bypass -File setup.ps1
@@ -102,10 +102,10 @@ python verify_env.py
 
 | # | 铁律 | 原因 | 违反后的症状 |
 |---|------|------|------------|
-| 1 | **使用 PyTorch nightly cu130** | 稳定版不包含 sm_120 内核 | `RuntimeError: sm_120 is not compatible` |
-| 2 | **绝对不要安装 xformers** | 会强制将 PyTorch 降级到稳定版 | 一切停止工作 |
-| 3 | **从 requirements.txt 中排除 torch** | pip 会用稳定版覆盖 nightly 版 | 静默版本降级 |
-| 4 | **添加自定义节点后务必验证** | 节点依赖可能要求稳定版 torch | 之前正常的环境突然损坏 |
+| 1 | **使用 PyTorch nightly cu130** | 这是本方案验证过的构建。不含 sm_120 内核的构建无法在 RTX 50 上运行 | `RuntimeError: sm_120 is not compatible` |
+| 2 | **绝对不要安装 xformers** | 其 wheel 固定了 torch 版本，pip 会替换 cu130 构建 | 一切停止工作 |
+| 3 | **从 requirements.txt 中排除 torch** | pip 会用其他 torch 覆盖 nightly cu130 构建 | 静默版本降级 |
+| 4 | **添加自定义节点后务必验证** | 节点依赖可能引入其他 torch 构建 | 之前正常的环境突然损坏 |
 | 5 | **清除代理环境变量** | 系统代理会阻止 pip/git 连接 | 安装失败 |
 
 ---
@@ -194,7 +194,7 @@ powershell -ExecutionPolicy Bypass -File update.ps1
 A: 不需要。本方案完全在 Windows 原生环境运行。
 
 **Q: 可以使用 xformers 吗?**
-A: 不可以。xformers 会强制降级 PyTorch 到稳定版，该版本不支持 sm_120。
+A: 不可以。xformers 的 wheel 固定了 torch 版本，安装后会替换 cu130 构建。请改用 triton-windows + torch.compile。
 
 **Q: 在 RTX 4090 上能用吗?**
 A: 可以。cu130 向后兼容。但 RTX 4090 用户也可以使用 PyTorch 稳定版。
