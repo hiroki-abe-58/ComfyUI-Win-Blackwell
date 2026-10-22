@@ -53,6 +53,15 @@ function Test-CommandExists {
     $null -ne (Get-Command $Cmd -ErrorAction SilentlyContinue)
 }
 
+# Run a native command with its stderr discarded. Under "Stop", Windows PowerShell 5.1 turns any line a native command
+# writes to a redirected stderr into a terminating error, so a warning from pip or `import torch` aborted the setup.
+function Invoke-Quiet {
+    param([scriptblock]$Command)
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try { & $Command 2>$null } finally { $ErrorActionPreference = $saved }
+}
+
 # ---------------------------------------------------------------------------
 # Banner
 # ---------------------------------------------------------------------------
@@ -95,7 +104,7 @@ if (-not (Test-CommandExists "nvidia-smi")) {
     exit 1
 }
 
-$driverLine = nvidia-smi --query-gpu=driver_version --format=csv,noheader 2>$null
+$driverLine = Invoke-Quiet { nvidia-smi --query-gpu=driver_version --format=csv,noheader }
 if ($driverLine) {
     $driverVer = [float]$driverLine.Trim()
     if ($driverVer -lt 580) {
@@ -108,7 +117,7 @@ if ($driverLine) {
     Write-Warn "Could not query driver version. Continuing..."
 }
 
-$gpuName = (nvidia-smi --query-gpu=name --format=csv,noheader 2>$null)
+$gpuName = Invoke-Quiet { nvidia-smi --query-gpu=name --format=csv,noheader }
 if ($gpuName) { Write-Ok "GPU: $($gpuName.Trim())" }
 
 # ---------------------------------------------------------------------------
@@ -125,7 +134,7 @@ if (Test-Path (Join-Path $resolvedDir "ComfyUI\main.py")) {
     Write-Host "  This may take several minutes depending on your connection." -ForegroundColor Gray
 
     $tempZip = Join-Path $env:TEMP "ComfyUI_windows_portable.7z"
-    $downloadUrl = "https://github.com/comfyanonymous/ComfyUI/releases/latest/download/ComfyUI_windows_portable_nvidia.7z"
+    $downloadUrl = "https://github.com/Comfy-Org/ComfyUI/releases/latest/download/ComfyUI_windows_portable_nvidia.7z"
 
     try {
         if (Test-CommandExists "curl.exe") {
@@ -136,13 +145,16 @@ if (Test-Path (Join-Path $resolvedDir "ComfyUI\main.py")) {
     } catch {
         Write-Err "Download failed: $_"
         Write-Host "  Please download manually from:" -ForegroundColor Yellow
-        Write-Host "  https://github.com/comfyanonymous/ComfyUI/releases" -ForegroundColor Yellow
+        Write-Host "  https://github.com/Comfy-Org/ComfyUI/releases" -ForegroundColor Yellow
         exit 1
     }
 
     Write-Host "  Extracting..." -ForegroundColor White
-    if (Test-CommandExists "7z") {
-        7z x $tempZip -o"$(Split-Path $resolvedDir -Parent)" -y
+    # The 7-Zip installer (and winget) does not put 7z.exe on PATH, so also look in its install folders.
+    $sevenZip = @((Get-Command 7z -ErrorAction SilentlyContinue | ForEach-Object Source), "$env:ProgramFiles\7-Zip\7z.exe",
+                  "${env:ProgramFiles(x86)}\7-Zip\7z.exe") | Where-Object { $_ -and (Test-Path $_) } | Select-Object -First 1
+    if ($sevenZip) {
+        & $sevenZip x $tempZip -o"$(Split-Path $resolvedDir -Parent)" -y
     } else {
         Write-Err "7-Zip (7z) is not installed. Please install it or extract manually."
         Write-Host "  Install: winget install 7zip.7zip" -ForegroundColor Yellow
@@ -173,7 +185,7 @@ Write-Step "4/8" "Installing PyTorch with CUDA 13.0 (cu130)..."
 Write-Host "  This is the most important step for Blackwell GPU support." -ForegroundColor Yellow
 Write-Host "  Download size: ~1.9 GB. Please be patient." -ForegroundColor Gray
 
-& $pipCmd -s -m pip install --upgrade pip 2>$null
+Invoke-Quiet { & $pipCmd -s -m pip install --upgrade pip }
 
 & $pipCmd -s -m pip install --pre torch torchvision torchaudio `
     --index-url https://download.pytorch.org/whl/nightly/cu130 `
@@ -185,7 +197,14 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-$torchVer = & $pipCmd -s -c "import torch; print(torch.__version__)" 2>$null
+$torchVer = Invoke-Quiet { & $pipCmd -s -c "import torch; print(torch.__version__)" }
+if (-not $torchVer) {
+    Write-Err "PyTorch was installed but cannot be imported."
+    Write-Host "  Run this to see why: `"$pipCmd`" -s -c `"import torch`"" -ForegroundColor Yellow
+    Write-Host "  'WinError 126' (a DLL that cannot be loaded) is often a missing Microsoft Visual C++ Redistributable:" -ForegroundColor Yellow
+    Write-Host "  https://aka.ms/vs/17/release/vc_redist.x64.exe" -ForegroundColor Yellow
+    exit 1
+}
 Write-Ok "PyTorch: $torchVer"
 
 # ---------------------------------------------------------------------------

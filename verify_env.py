@@ -5,7 +5,7 @@ Validates that the current environment is correctly configured for
 NVIDIA GeForce RTX 50-series GPUs on Windows.
 
 Usage:
-    python verify_env.py
+    ComfyUI_windows_portable\python_embeded\python.exe -s verify_env.py
 """
 
 import sys

@@ -91,7 +91,8 @@ powershell -ExecutionPolicy Bypass -File setup.ps1
 
 ```powershell
 # 安装完成后，验证一切正常
-python verify_env.py
+# 使用 ComfyUI 自带的 Python 运行（PATH 中的 python 会检查另一个环境）
+.\ComfyUI_windows_portable\python_embeded\python.exe -s verify_env.py
 ```
 
 ---
