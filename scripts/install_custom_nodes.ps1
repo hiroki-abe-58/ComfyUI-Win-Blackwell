@@ -46,6 +46,16 @@ if ($RequiredOnly) {
 
 $total = $nodes.Count
 $current = 0
+
+# All the repositories are public, so a clone never needs credentials. Without these two settings, a repository that
+# was deleted or renamed makes Git Credential Manager ask you to sign in, and the clone fails anyway.
+$env:GIT_TERMINAL_PROMPT = "0"
+$env:GCM_INTERACTIVE = "never"
+
+# From here on, git and pip report failure through their exit codes. Under "Stop", Windows PowerShell 5.1 turns their
+# progress and warnings on stderr into terminating errors: every clone was reported as an error, even when it worked,
+# and its requirements were not installed.
+$ErrorActionPreference = "Continue"
 $succeeded = 0
 $skipped = 0
 $failed = 0
@@ -68,7 +78,7 @@ foreach ($node in $nodes) {
     }
 
     try {
-        git clone --depth 1 $node.url $targetDir 2>$null
+        git -c credential.interactive=never clone --quiet --depth 1 $node.url $targetDir 2>$null
         if ($LASTEXITCODE -eq 0) {
             Write-Host " -- OK" -ForegroundColor Green
 

@@ -10,7 +10,7 @@
   "nodes": [
     {
       "name": "ComfyUI-Manager",
-      "url": "https://github.com/ltdrdata/ComfyUI-Manager.git",
+      "url": "https://github.com/Comfy-Org/ComfyUI-Manager.git",
       "description": "Node management UI for ComfyUI",
       "category": "management",
       "required": true
@@ -28,48 +28,6 @@
       "category": "video"
     },
     {
-      "name": "ComfyUI-HeartMuLa",
-      "url": "https://github.com/HeartMuLa/ComfyUI-HeartMuLa.git",
-      "description": "HeartMuLa music/audio generation",
-      "category": "audio"
-    },
-    {
-      "name": "ComfyUI-AceMusic",
-      "url": "https://github.com/smthemex/ComfyUI-AceMusic.git",
-      "description": "ACE-Step music generation nodes",
-      "category": "audio"
-    },
-    {
-      "name": "ComfyUI-MelBandRoFormer",
-      "url": "https://github.com/smthemex/ComfyUI-MelBandRoFormer.git",
-      "description": "Audio source separation (vocal/instrumental)",
-      "category": "audio"
-    },
-    {
-      "name": "ComfyUI-Step1X-Edit",
-      "url": "https://github.com/smthemex/ComfyUI-Step1X-Edit.git",
-      "description": "Step1X image editing nodes",
-      "category": "image-editing"
-    },
-    {
-      "name": "ComfyUI_SimpleTranslator",
-      "url": "https://github.com/smthemex/ComfyUI_SimpleTranslator.git",
-      "description": "Text translation nodes",
-      "category": "utility"
-    },
-    {
-      "name": "ComfyUI_FL-HeartMuLa",
-      "url": "https://github.com/smthemex/ComfyUI_FL-HeartMuLa.git",
-      "description": "HeartMuLa FL variant nodes",
-      "category": "audio"
-    },
-    {
-      "name": "ComfyUI_kkTranslator_nodes",
-      "url": "https://github.com/smthemex/ComfyUI_kkTranslator_nodes.git",
-      "description": "Translation utility nodes",
-      "category": "utility"
-    },
-    {
       "name": "ComfyUI_Comfyroll_CustomNodes",
       "url": "https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes.git",
       "description": "Comprehensive utility node collection",
@@ -82,21 +40,9 @@
       "category": "utility"
     },
     {
-      "name": "comfyui_longcat_image",
-      "url": "https://github.com/smthemex/comfyui_longcat_image.git",
-      "description": "LongCat image/video processing",
-      "category": "video"
-    },
-    {
       "name": "comfyui-kjnodes",
       "url": "https://github.com/kijai/ComfyUI-KJNodes.git",
       "description": "Image resize, float/int constants, and utility nodes",
-      "category": "utility"
-    },
-    {
-      "name": "comfyui-quadmoons-nodes",
-      "url": "https://github.com/trung0209/ComfyUI-quadmoons-nodes.git",
-      "description": "Quadmoons utility nodes",
       "category": "utility"
     },
     {
@@ -169,12 +115,6 @@
       "name": "rgthree-comfy",
       "url": "https://github.com/rgthree/rgthree-comfy.git",
       "description": "Power tools: reroute, bookmark, seed control",
-      "category": "utility"
-    },
-    {
-      "name": "ComfyUI-SKBundle",
-      "url": "https://github.com/shinich39/ComfyUI-SKBundle.git",
-      "description": "SK bundle utility nodes",
       "category": "utility"
     }
   ]
